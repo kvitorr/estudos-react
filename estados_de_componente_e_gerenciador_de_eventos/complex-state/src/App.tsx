@@ -35,34 +35,15 @@ const Button: React.FC<Butto> = ({ handleClique, texto }) => (
 
 
 const App = () => {
-  const [esquerda, setEsquerda] = useState<number>(0)
-  const [direita, setDireita] = useState<number>(0)
-  const [todosOsCliques, setTodos] = useState<string[]>([])
-  const [total, setTotal] = useState<number>(0)
-
-
-  const handleCliqueEsquerda = () => {
-    setTodos(todosOsCliques.concat('E'))
-    const atualizaEsquerda = esquerda + 1
-    setEsquerda(esquerda + 1)
-    setTotal(esquerda + direita)
-  } 
-
-  const handleCliqueDireita = () => {
-    setTodos(todosOsCliques.concat('D'))
-    const atualizaDireita = direita + 1
-    setDireita(atualizaDireita)
-    setTotal(atualizaDireita + esquerda)
-  }
+  const [valor, setValor] = useState<number>(0)
 
   return (
     <div>
-      {esquerda}
-      <Button handleClique={handleCliqueEsquerda} texto='Esquerda'/>
-      <Button handleClique={handleCliqueDireita} texto='Direita'/>
-      {direita}
+      {valor}
+      <Button handleClique={() => setValor(1000)} texto={'mil'}/>
+      <Button handleClique={() => setValor(0)} texto={'reset'}/>
+      <Button handleClique={() => setValor(valor+1)} texto={'increment'}/>
 
-      <Historico todosOsCliques={todosOsCliques}/>
     </div>
   )
 }
