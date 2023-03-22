@@ -25,9 +25,10 @@ interface IStatisticsLine {
 const StatisticLine: React.FC<IStatisticsLine> = ({texto, valor}) => {
 
   return (
-    <>
-      {texto} {valor}
-    </>
+    <tr>
+      <td>{texto}</td>
+      <td>{valor}</td>
+    </tr>
   )
 
 }
@@ -51,14 +52,14 @@ const Statistics: React.FC<IStatistics> = ({good, neutral, bad, votes, average, 
     )  
   }
   return(
-    <div>
-      <StatisticLine texto='good' valor={good}/><br/>
-      <StatisticLine texto='neutral' valor={neutral}/><br/>
-      <StatisticLine texto='bad' valor={bad}/><br/>
-      <StatisticLine texto='all' valor={votes}/><br/>
-      <StatisticLine texto='average' valor={average}/><br/>
-      <StatisticLine texto='positive' valor={positive}/><br/>
-    </div>
+    <table>
+      <StatisticLine texto='good' valor={good}/>
+      <StatisticLine texto='neutral' valor={neutral}/>
+      <StatisticLine texto='bad' valor={bad}/>
+      <StatisticLine texto='all' valor={votes}/>
+      <StatisticLine texto='average' valor={average}/>
+      <StatisticLine texto='positive' valor={positive}/>
+    </table>
   )
 }
 
