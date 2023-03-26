@@ -1,20 +1,29 @@
-import { useState } from "react"
+import axios from "axios"
+import { useEffect, useState } from "react"
 import Note from "./components/Note"
 
 interface INotes {
-  notes: {
-    id: number
-    content: string
-    important: boolean
-  } []
+  id: number
+  content: string
+  important: boolean
 }
 
 
-const App: React.FC<INotes> = ({notes}) => {
-  
-  const [currentNotes, setNotes] = useState(notes)
-  const [newNote, setNewNote] = useState('a new note...')
+const App = () => {
+  const [currentNotes, setNotes] = useState<INotes[]>([])
+  const [newNote, setNewNote] = useState('')
   const [showAll, setShowAll] = useState(true)
+
+  useEffect(() => {
+    console.log('effect')
+    axios
+      .get('http://localhost:3001/notes')
+      .then(response => {
+        console.log('promise fulfilled')
+        setNotes(response.data)
+      })
+  }, [])
+
 
   const addNote = (event: any) => {
     event.preventDefault()
