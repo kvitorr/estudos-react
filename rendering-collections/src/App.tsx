@@ -2,7 +2,7 @@ import axios from "axios"
 import { useEffect, useState } from "react"
 import Note from "./components/Note"
 
-interface INotes {
+export interface INotes {
   id: number
   content: string
   important: boolean
@@ -15,11 +15,9 @@ const App = () => {
   const [showAll, setShowAll] = useState(true)
 
   useEffect(() => {
-    console.log('effect')
     axios
       .get('http://localhost:3001/notes')
       .then(response => {
-        console.log('promise fulfilled')
         setNotes(response.data)
       })
   }, [])
@@ -31,11 +29,27 @@ const App = () => {
     const noteObject = {
       content: newNote,
       important: Math.random() < 0.5,
-      id: currentNotes.length + 1 
     }
 
-    setNotes(currentNotes.concat(noteObject))
+    axios
+    .post('http://localhost:3001/notes', noteObject)
+    .then(response => {
+      
+    setNotes(currentNotes.concat(response.data))
     setNewNote('')
+    })
+  }
+
+  const toggleImportanceOf = (id: number) => {
+    const url = `http://localhost:3001/notes/${id}`
+    const note = currentNotes.find(n => n.id === id)
+    if(note) {
+      const changedNote = { ...note, important: !note.important }
+  
+      axios.put(url, changedNote).then(response => {
+        setNotes(currentNotes.map(n => n.id !== id ? n : response.data))
+      })
+    }
   }
 
   const handleNoteChange = (event: any) => {
@@ -55,8 +69,8 @@ const App = () => {
         </button>
       </div>
       <ul>
-          {notesToShow.map((note: any) => 
-            <Note key={note.id} {...note}/>
+          {notesToShow.map((note: INotes, id) => 
+            <Note key={id} content={note.content} important={note.important} toggleImportance={() => toggleImportanceOf(note.id)}/>
           )}
       </ul>
       <form onSubmit={addNote}>
