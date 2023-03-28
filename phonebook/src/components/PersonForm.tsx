@@ -2,6 +2,8 @@ import React, { useState } from "react"
 import { Person } from "../interfaces/Person"
 import { areObjectsEqual } from "../utils/functions"
 
+import phonebookService from "../services/phonebookService"
+import Persons from "./Persons"
 
 type PersonForm = {
     persons: Person[]
@@ -16,19 +18,35 @@ const PersonForm: React.FC<PersonForm> = ({persons, setPersons}) => {
         event.preventDefault()
     
         const newPerson: Person = {
-            name: newName,
-            number: newNumber,
-            id: persons.length + 1
+          name: newName,
+          number: newNumber,
         }
-        
-        if(persons.some((person: Person) => areObjectsEqual(person, newPerson))) {
-            alert(`${newPerson.name} is already added to phonebook`)
+
+        if(persons.some((person: Person) => person.name === newName)) {
+          if(window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
+            const person: Person | undefined = persons.find(person => person.name == newName)
+
+            if(person) {
+              phonebookService
+              .update(person.id, newPerson)
+              .then(personUpdated => {
+                const personsUpdated = persons.filter((person: Person) => person.id != personUpdated.id)
+                setPersons(personsUpdated.concat(personUpdated))
+              })  
+            } 
+          }
+
             setNewName('')
             setNewNumber('')
         } else {
+
+          phonebookService
+          .create(newPerson)
+          .then(newPerson => {
             setPersons(persons.concat(newPerson))
-            setNewName('')
-            setNewNumber('')
+          })
+          setNewName('')
+          setNewNumber('')
         }
       }
     
